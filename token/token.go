@@ -29,3 +29,11 @@ type Token struct {
 	Type    TokenType // Token的类别
 	Literal string    // Token的字面量
 }
+
+// New 创建Token
+func New(tokenType TokenType, literal byte) Token {
+	return Token{
+		Type:    tokenType,
+		Literal: string(literal),
+	}
+}
