@@ -1,6 +1,8 @@
 package lexer
 
-import "BubblePL/token"
+import (
+	"BubblePL/token"
+)
 
 // Lexer 负责将源代码转换成Tokens
 type Lexer struct {
@@ -14,6 +16,7 @@ type Lexer struct {
 func (l *Lexer) readChar() {
 	// 如果读取完成，就把字符串赋值为\0代表字符串结束
 	if l.readPosition >= len(l.input) {
+		// ASCII 0 = NUL
 		l.ch = 0
 	} else {
 		// 处理下一个字符
@@ -26,6 +29,7 @@ func (l *Lexer) readChar() {
 
 // NextToken 生成源代码的下一个Token
 func (l *Lexer) NextToken() token.Token {
+	l.eatWhitespace()
 	var tk token.Token
 	switch l.ch {
 	case '+':
@@ -44,14 +48,67 @@ func (l *Lexer) NextToken() token.Token {
 		tk = token.New(token.LPAREN, l.ch)
 	case ')':
 		tk = token.New(token.RPAREN, l.ch)
-	case '0':
-		tk = token.New(token.EOF, l.ch)
+	case 0:
+		tk.Type = token.EOF
+		tk.Literal = ""
 	default:
-		tk = token.New(token.ILLEGAL, l.ch)
+		if isLetter(l.ch) {
+			tk.Literal = l.readIdentifier()
+			tk.Type = token.LookupIdentifier(tk.Literal)
+			// 因为在Lexer.readIdentifier中已经调用Lexer.readChar将position的位置移动到了当前identifier后第一个位置，这里直接返回
+			return tk
+		} else if isNumber(l.ch) {
+			tk.Literal = l.readNumber()
+			tk.Type = token.INT
+			return tk
+		} else {
+			tk = token.New(token.ILLEGAL, l.ch)
+		}
 	}
 	// 读取
 	l.readChar()
 	return tk
+}
+
+// isLetter 检测byte是否是字母
+func isLetter(ch byte) bool {
+	if 'a' <= ch && ch <= 'z' || 'A' <= ch && ch <= 'Z' || ch == '_' {
+		return true
+	}
+	return false
+}
+
+// isNumber 检查byte是否为数字
+func isNumber(ch byte) bool {
+	if '0' <= ch && ch <= '9' {
+		return true
+	}
+	return false
+}
+
+// readIdentifier 读取标识符的字面量
+func (l *Lexer) readIdentifier() string {
+	position := l.position
+	for isLetter(l.ch) {
+		l.readChar()
+	}
+	return l.input[position:l.position]
+}
+
+// readNumber 读取数字的字面量
+func (l *Lexer) readNumber() string {
+	position := l.position
+	for isNumber(l.ch) {
+		l.readChar()
+	}
+	return l.input[position:l.position]
+}
+
+// eatWhitespace 去掉无意义的符号
+func (l *Lexer) eatWhitespace() {
+	for l.ch == '\t' || l.ch == ' ' || l.ch == '\n' || l.ch == '\r' {
+		l.readChar()
+	}
 }
 
 func New(input string) *Lexer {
