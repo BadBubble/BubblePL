@@ -35,7 +35,19 @@ func (l *Lexer) NextToken() token.Token {
 	case '+':
 		tk = token.New(token.PLUS, l.ch)
 	case '=':
-		tk = token.New(token.ASSIGN, l.ch)
+		if l.peekChar() == '=' {
+			tk = token.Token{Type: token.EQ, Literal: string(l.ch) + string(l.peekChar())}
+			l.readChar()
+		} else {
+			tk = token.New(token.ASSIGN, l.ch)
+		}
+	case '!':
+		if l.peekChar() == '=' {
+			tk = token.Token{Type: token.NOT_EQ, Literal: string(l.ch) + string(l.peekChar())}
+			l.readChar()
+		} else {
+			tk = token.New(token.BAND, l.ch)
+		}
 	case ';':
 		tk = token.New(token.SEMICOLON, l.ch)
 	case ',':
@@ -48,6 +60,16 @@ func (l *Lexer) NextToken() token.Token {
 		tk = token.New(token.LPAREN, l.ch)
 	case ')':
 		tk = token.New(token.RPAREN, l.ch)
+	case '/':
+		tk = token.New(token.SLASH, l.ch)
+	case '*':
+		tk = token.New(token.ASTERISK, l.ch)
+	case '-':
+		tk = token.New(token.MINUS, l.ch)
+	case '<':
+		tk = token.New(token.LT, l.ch)
+	case '>':
+		tk = token.New(token.GT, l.ch)
 	case 0:
 		tk.Type = token.EOF
 		tk.Literal = ""
@@ -109,6 +131,14 @@ func (l *Lexer) eatWhitespace() {
 	for l.ch == '\t' || l.ch == ' ' || l.ch == '\n' || l.ch == '\r' {
 		l.readChar()
 	}
+}
+
+// peekChar获取readPosition的字符
+func (l *Lexer) peekChar() byte {
+	if l.readPosition >= len(l.input) {
+		return 0
+	}
+	return l.input[l.readPosition]
 }
 
 func New(input string) *Lexer {
