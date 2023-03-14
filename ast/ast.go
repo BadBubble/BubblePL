@@ -103,19 +103,19 @@ func (rs *ReturnStatement) ToLiteral() string {
 	return rs.Token.Literal
 }
 
-type ExpressionNode struct {
+type ExpressionStatement struct {
 	Token      token.Token
 	Expression Expression
 }
 
-func (exp *ExpressionNode) statementNode() {
+func (exp *ExpressionStatement) statementNode() {
 }
 
-func (exp *ExpressionNode) ToLiteral() string {
+func (exp *ExpressionStatement) ToLiteral() string {
 	return exp.Token.Literal
 }
 
-func (exp *ExpressionNode) String() string {
+func (exp *ExpressionStatement) String() string {
 	if exp.Expression != nil {
 		return exp.Expression.String()
 	}
