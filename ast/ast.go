@@ -1,9 +1,13 @@
 package ast
 
-import "BubblePL/token"
+import (
+	"BubblePL/token"
+	"bytes"
+)
 
 type Node interface {
 	ToLiteral() string
+	String() string
 }
 
 type Statement interface {
@@ -27,6 +31,14 @@ func (p *Program) ToLiteral() string {
 	return ""
 }
 
+func (p *Program) String() string {
+	var out bytes.Buffer
+	for _, s := range p.Statements {
+		out.WriteString(s.String())
+	}
+	return out.String()
+}
+
 type LetStatement struct {
 	Token token.Token
 	Name  *Identifier
@@ -35,6 +47,16 @@ type LetStatement struct {
 
 func (ls *LetStatement) ToLiteral() string {
 	return ls.Token.Literal
+}
+
+func (ls *LetStatement) String() string {
+	var out bytes.Buffer
+	out.WriteString(ls.ToLiteral() + " " + ls.Name.String() + " = ")
+	if ls.Value != nil {
+		out.WriteString(ls.Value.String())
+	}
+	out.WriteString(";")
+	return out.String()
 }
 
 func (ls *LetStatement) statementNode() {
@@ -47,6 +69,10 @@ type Identifier struct {
 
 func (i *Identifier) ToLiteral() string {
 	return i.Token.Literal
+}
+
+func (i *Identifier) String() string {
+	return i.Value
 }
 
 func (i *Identifier) expressionNode() {
@@ -62,6 +88,36 @@ func (rs *ReturnStatement) statementNode() {
 
 }
 
+func (rs *ReturnStatement) String() string {
+	var out bytes.Buffer
+
+	out.WriteString(rs.ToLiteral() + " ")
+	if rs.ReturnValue != nil {
+		out.WriteString(rs.ReturnValue.String())
+	}
+	out.WriteString(";")
+	return out.String()
+}
+
 func (rs *ReturnStatement) ToLiteral() string {
 	return rs.Token.Literal
+}
+
+type ExpressionNode struct {
+	Token      token.Token
+	Expression Expression
+}
+
+func (exp *ExpressionNode) statementNode() {
+}
+
+func (exp *ExpressionNode) ToLiteral() string {
+	return exp.Token.Literal
+}
+
+func (exp *ExpressionNode) String() string {
+	if exp.Expression != nil {
+		return exp.Expression.String()
+	}
+	return ""
 }
