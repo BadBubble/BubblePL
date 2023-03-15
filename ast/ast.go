@@ -63,7 +63,7 @@ func (ls *LetStatement) statementNode() {
 }
 
 type Identifier struct {
-	token.Token
+	Token token.Token
 	Value string
 }
 
@@ -77,6 +77,22 @@ func (i *Identifier) String() string {
 
 func (i *Identifier) expressionNode() {
 
+}
+
+type IntegerLiteral struct {
+	Token token.Token
+	Value int64
+}
+
+func (il *IntegerLiteral) expressionNode() {
+}
+
+func (il *IntegerLiteral) String() string {
+	return il.Token.Literal
+}
+
+func (il *IntegerLiteral) ToLiteral() string {
+	return il.Token.Literal
 }
 
 type ReturnStatement struct {
@@ -120,4 +136,27 @@ func (exp *ExpressionStatement) String() string {
 		return exp.Expression.String()
 	}
 	return ""
+}
+
+type PrefixExpression struct {
+	Token    token.Token
+	Right    Expression
+	Operator string
+}
+
+func (pe *PrefixExpression) expressionNode() {
+}
+
+func (pe *PrefixExpression) ToLiteral() string {
+	return pe.Token.Literal
+}
+
+func (pe *PrefixExpression) String() string {
+	var out bytes.Buffer
+
+	out.WriteString("(")
+	out.WriteString(pe.Operator)
+	out.WriteString(pe.Right.String())
+	out.WriteString(")")
+	return out.String()
 }
