@@ -3,6 +3,7 @@ package ast
 import (
 	"BubblePL/token"
 	"bytes"
+	"strings"
 )
 
 type Node interface {
@@ -248,4 +249,33 @@ func (i *IfExpression) String() string {
 		out.WriteString(i.Alternative.String())
 	}
 	return out.String()
+}
+
+type FunctionExpression struct {
+	Token      token.Token
+	Parameters []*Identifier
+	Body       *BlockStatement
+}
+
+func (f *FunctionExpression) String() string {
+	var out bytes.Buffer
+	params := []string{}
+	for _, p := range f.Parameters {
+		params = append(params, p.String())
+	}
+
+	out.WriteString(f.ToLiteral())
+	out.WriteString("(")
+	out.WriteString(strings.Join(params, ", "))
+	out.WriteString(") ")
+	out.WriteString(f.Body.String())
+
+	return out.String()
+}
+
+func (f *FunctionExpression) ToLiteral() string {
+	return f.Token.Literal
+}
+
+func (f *FunctionExpression) expressionNode() {
 }
