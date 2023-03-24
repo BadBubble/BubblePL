@@ -306,3 +306,19 @@ func (c *CallExpression) String() string {
 	out.WriteString(")")
 	return out.String()
 }
+
+type StringLiteral struct {
+	Token token.Token
+	Value string
+}
+
+func (s *StringLiteral) String() string {
+	return s.Value
+}
+
+func (s *StringLiteral) expressionNode() {
+}
+
+func (s *StringLiteral) ToLiteral() string {
+	return s.Token.Literal
+}
