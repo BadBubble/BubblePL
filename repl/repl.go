@@ -3,6 +3,7 @@ package repl
 import (
 	"BubblePL/evaluator"
 	"BubblePL/lexer"
+	"BubblePL/object"
 	"BubblePL/parser"
 	"bufio"
 	"fmt"
@@ -18,6 +19,7 @@ func printParseErrors(out io.Writer, errors []string) {
 }
 func Start(in io.Reader, out io.Writer) {
 	scanner := bufio.NewScanner(in)
+	env := object.NewEnvironment()
 	for {
 		fmt.Printf(PROMPT)
 		scanned := scanner.Scan()
@@ -32,7 +34,7 @@ func Start(in io.Reader, out io.Writer) {
 			printParseErrors(out, p.Errors())
 			continue
 		}
-		evaluated := evaluator.Eval(program)
+		evaluated := evaluator.Eval(program, env)
 		if evaluated != nil {
 			io.WriteString(out, evaluated.Inspect())
 			io.WriteString(out, "\n")
