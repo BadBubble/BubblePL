@@ -73,6 +73,9 @@ func (l *Lexer) NextToken() token.Token {
 	case 0:
 		tk.Type = token.EOF
 		tk.Literal = ""
+	case '"':
+		tk.Type = token.STRING
+		tk.Literal = l.readString()
 	default:
 		if isLetter(l.ch) {
 			tk.Literal = l.readIdentifier()
@@ -90,6 +93,17 @@ func (l *Lexer) NextToken() token.Token {
 	// 读取
 	l.readChar()
 	return tk
+}
+
+func (l *Lexer) readString() string {
+	pos := l.position + 1
+	for {
+		l.readChar()
+		if l.ch == '"' || l.ch == 0 {
+			break
+		}
+	}
+	return l.input[pos:l.position]
 }
 
 // isLetter 检测byte是否是字母
