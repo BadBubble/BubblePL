@@ -297,3 +297,29 @@ addTwo(2);
 `
 	testIntegerObject(t, testEval(input), 4)
 }
+
+func TestStringLiteral(t *testing.T) {
+	input := `let x = "hello, world!"; x;`
+	evaluated := testEval(input)
+	str, ok := evaluated.(*object.String)
+	if !ok {
+		t.Errorf("got wrong type. got=%T", evaluated)
+
+	}
+	if str.Inspect() != "hello, world!" {
+		t.Errorf("got wrong string. got=%s", evaluated)
+	}
+}
+
+func TestStringLiteralConcat(t *testing.T) {
+	input := `"hello," + " world!"`
+	evaluated := testEval(input)
+	str, ok := evaluated.(*object.String)
+	if !ok {
+		t.Errorf("got wrong type. got=%T", evaluated)
+
+	}
+	if str.Inspect() != "hello, world!" {
+		t.Errorf("got wrong string. got=%s", evaluated)
+	}
+}
