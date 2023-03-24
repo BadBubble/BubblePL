@@ -36,6 +36,7 @@ const (
 	TRUE     = "TRUE"
 	FALSE    = "FALSE"
 	RETURN   = "RETURN"
+	STRING   = "STRING"
 )
 
 // KeywordsMap 关键字的Literal到TokenType的映射
