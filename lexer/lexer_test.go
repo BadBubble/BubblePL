@@ -22,6 +22,8 @@ if (5 < 10) {
 }
 10 == 10
 9 != 10
+"foobar"
+"foo bar"
 `
 
 	tests := []struct {
@@ -113,6 +115,8 @@ if (5 < 10) {
 		{token.INT, "9"},
 		{token.NOT_EQ, "!="},
 		{token.INT, "10"},
+		{token.STRING, "foobar"},
+		{token.STRING, "foo bar"},
 		// EOF
 		{token.EOF, ""},
 	}
