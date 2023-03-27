@@ -70,6 +70,10 @@ func (l *Lexer) NextToken() token.Token {
 		tk = token.New(token.LT, l.ch)
 	case '>':
 		tk = token.New(token.GT, l.ch)
+	case '[':
+		tk = token.New(token.LBRACKET, l.ch)
+	case ']':
+		tk = token.New(token.RBRACKET, l.ch)
 	case 0:
 		tk.Type = token.EOF
 		tk.Literal = ""
