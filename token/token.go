@@ -37,6 +37,8 @@ const (
 	FALSE    = "FALSE"
 	RETURN   = "RETURN"
 	STRING   = "STRING"
+	LBRACKET = "["
+	RBRACKET = "]"
 )
 
 // KeywordsMap 关键字的Literal到TokenType的映射
