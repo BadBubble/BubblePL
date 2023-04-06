@@ -1,6 +1,9 @@
 package evaluator
 
-import "BubblePL/object"
+import (
+	"BubblePL/object"
+	"fmt"
+)
 
 var builtins = map[string]*object.Builtin{
 	"len": {func(args ...object.Object) object.Object {
@@ -86,6 +89,12 @@ var builtins = map[string]*object.Builtin{
 			newElements := make([]object.Object, length-1, length-1)
 			copy(newElements, arr.Elements[0:length-1])
 			return &object.Array{Elements: newElements}
+		}
+		return NULL
+	}},
+	"print": {Fn: func(args ...object.Object) object.Object {
+		for _, arg := range args {
+			fmt.Println(arg.Inspect())
 		}
 		return NULL
 	}},
