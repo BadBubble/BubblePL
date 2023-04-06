@@ -22,6 +22,7 @@ const (
 	EQ     = "EQ"
 	NOT_EQ = "NOT_EQ"
 	/*符号*/
+	COLON     = ":"
 	COMMA     = ","
 	SEMICOLON = ";"
 	LPAREN    = "("
